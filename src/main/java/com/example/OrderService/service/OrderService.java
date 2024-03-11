@@ -50,13 +50,13 @@ public class OrderService {
                 throw new OrderItemNotFoundException("OrderItem not found " + ItemName);
             }
         }
-        Order order = new Order(usersModel,totalPrice,OrderStatus.CREATED,orderItems);
-        Order returnedOrder = orderRepository.save(order);
+        Orders order = new Orders(usersModel,totalPrice,OrderStatus.CREATED,orderItems,orderRequest.getLocation());
+        Orders returnedOrder = orderRepository.save(order);
 
         return new OrderResponse(returnedOrder.getId(),username,orderItems,totalPrice,OrderStatus.CREATED);
     }
 
-    public Order getOrder(Integer id){
+    public Orders getOrder(Integer id){
         return orderRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 

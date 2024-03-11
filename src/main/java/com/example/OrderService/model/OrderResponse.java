@@ -19,6 +19,5 @@ public class OrderResponse {
     private List<OrderItems> orderItems;
     private Double totalPrice;
     private OrderStatus orderStatus;
-//    private Order order;
 
 }

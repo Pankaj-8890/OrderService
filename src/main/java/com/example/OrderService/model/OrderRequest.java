@@ -12,5 +12,6 @@ public class OrderRequest {
 
     private Integer restaurant_id;
     private List<OrderItems> orderItems;
+    private String location;
 
 }

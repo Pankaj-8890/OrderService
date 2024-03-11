@@ -1,7 +1,8 @@
 package com.example.OrderService.service;
 
 import FulfillmentService.*;
-import com.example.OrderService.model.Order;
+import com.example.OrderService.exceptions.DeliveryExecutiveNotAvailableException;
+import com.example.OrderService.model.Orders;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.stereotype.Service;
@@ -17,21 +18,21 @@ public class FulfillmentService {
     private static final int port = 9090;
 
 
-    public static AssignOrderResponse assignOrder(Orders order, String pickupLocation) throws DeliveryExecutiveNotFoundException {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(fulfillmentServiceHost, port)
+    public static AssignedOrderResponse assignOrder(Orders order) throws DeliveryExecutiveNotAvailableException {
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext().build();
 
-        FulfillmentServiceGrpc.FulfillmentServiceBlockingStub stub = FulfillmentServiceGrpc.newBlockingStub(channel);
-        Order orderToAssign = Order.newBuilder().setOrderId(order.getOrderId()).setStatus(order.getStatus().toString()).
-                setTotalPrice(order.getTotal_price().floatValue()).setPickUpLocation(pickupLocation).setDropLocation(order.getCustomer().getAddress())
+        fulfillmentGrpc.fulfillmentBlockingStub stub = fulfillmentGrpc.newBlockingStub(channel);
+        Order orderToAssign = Order.newBuilder().setId(order.getId()).setOrderStatus(order.getOrderStatus().toString()).setLocation(order.getLocation())
                 .build();
-        AssignOrderRequest request = AssignOrderRequest.newBuilder().setOrder(orderToAssign).build();
+
+        AssignedOrderRequest request = AssignedOrderRequest.newBuilder().setOrder(orderToAssign).build();
         try{
-            var response = stub.assignOrder(request);
+            var response = stub.assignedOrder(request);
             channel.shutdown();
             return response;
         }catch(Exception exception) {
-            throw new DeliveryExecutiveNotFoundException("No delivery executive found at location " + pickupLocation);
+            throw new DeliveryExecutiveNotAvailableException("No delivery executive found at location");
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,8 @@ public class Order {
 
     private Double totalPrice;
 
+    private String location;
+
     @ElementCollection
     private List<OrderItems> orderItems;
 
@@ -30,10 +32,13 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    public Order(User usersModel, double totalPrice, OrderStatus orderStatus,List<OrderItems> orderItems) {
+
+    public Orders(User usersModel, double totalPrice, OrderStatus orderStatus, List<OrderItems> orderItems,String location) {
         this.user = usersModel;
         this.totalPrice = totalPrice;
         this.orderStatus = orderStatus;
         this.orderItems = orderItems;
+        this.location = location;
     }
+
 }
